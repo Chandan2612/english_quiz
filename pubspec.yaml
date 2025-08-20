@@ -14,6 +14,8 @@ dependencies:
   flutter_bloc: ^9.0.0
   equatable: ^2.0.5
   shared_preferences: ^2.2.3
+  connectivity_plus: ^6.0.3
+  internet_connection_checker_plus: ^2.7.2
 
 dev_dependencies:
   flutter_test:
@@ -22,14 +24,23 @@ dev_dependencies:
   flutter_launcher_icons: ^0.14.3
 
 # 🔻 THIS BLOCK MUST BE TOP-LEVEL, NOT UNDER dev_dependencies
+# flutter_launcher_icons:
+#   android: true               # or "launcher_icon"
+#   ios: true
+#   image_path: assets/eqlogo.png
+#   # Optional (Android 8+ adaptive icons)
+#   # adaptive_icon_background: "#121022"   # or an image path
+#   # adaptive_icon_foreground: assets/eqlogo.png
+#   min_sdk_android: 21
+
 flutter_launcher_icons:
-  android: true               # or "launcher_icon"
+  android: true
   ios: true
-  image_path: assets/eqlogo.png
-  # Optional (Android 8+ adaptive icons)
-  # adaptive_icon_background: "#121022"   # or an image path
-  # adaptive_icon_foreground: assets/eqlogo.png
-  min_sdk_android: 21
+  image_path_android: "assets/math_quiz_icon.png"        # fallback for non-adaptive
+  image_path_ios: "assets/math_quiz_icon.png"
+  adaptive_icon_background: "#0B3B22"                          # matches your dark emerald
+  adaptive_icon_foreground: "assets/math_quiz_icon.png"
+
 
 flutter:
   uses-material-design: true

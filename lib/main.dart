@@ -1,3 +1,4 @@
+import 'package:english_quiz/widgets/offline_gate.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -10,7 +11,7 @@ import 'pages/splash_page.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await SystemChrome.setPreferredOrientations([
-    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitUp, // lock to vertical
     // DeviceOrientation.portraitDown,
   ]);
   final isDark = await Prefs.getIsDark();
@@ -20,41 +21,34 @@ void main() async {
 /// 🌿 Dark color scheme — emerald-forward, readable, and consistent
 final ColorScheme darkScheme = const ColorScheme(
   brightness: Brightness.dark,
-  primary: Color(0xFF16A34A), // 🌿 Emerald (brand primary)
+  primary: Color(0xFF16A34A),
   onPrimary: Color(0xFFFFFFFF),
-  primaryContainer: Color(0xFF0B3B22), // 🍃 Deep emerald surface
+  primaryContainer: Color(0xFF0B3B22),
   onPrimaryContainer: Color(0xFFBFF3D2),
-
-  secondary: Color(0xFF22C55E), // ✅ Accent green
+  secondary: Color(0xFF22C55E),
   onSecondary: Color(0xFF071A10),
   secondaryContainer: Color(0xFF113C25),
   onSecondaryContainer: Color(0xFFC6F6D5),
-
-  tertiary: Color(0xFF86EFAC), // 💚 Mint highlight
+  tertiary: Color(0xFF86EFAC),
   onTertiary: Color(0xFF072013),
   tertiaryContainer: Color(0xFF123D2A),
   onTertiaryContainer: Color(0xFFE6FBEF),
-
   error: Color(0xFFFFB4AB),
   onError: Color(0xFF690005),
   errorContainer: Color(0xFF8C1D18),
   onErrorContainer: Color(0xFFFFDAD6),
-
-  surface: Color(0xFF0F1A15), // 🧊 Card/Sheet base
+  surface: Color(0xFF0F1A15),
   onSurface: Color(0xFFDDE7E1),
-  surfaceContainerHighest: Color(0xFF1A2B23), // 🧱 Elevated surfaces
+  surfaceContainerHighest: Color(0xFF1A2B23),
   onSurfaceVariant: Color(0xFFB7C8C0),
-
   outline: Color(0xFF7A8D84),
   outlineVariant: Color(0xFF2A3A33),
-
   inverseSurface: Color(0xFFDDE7E1),
   onInverseSurface: Color(0xFF11201A),
   inversePrimary: Color(0xFF34D399),
-
   shadow: Color(0xFF000000),
   scrim: Color(0xFF000000),
-  surfaceTint: Color(0xFF16A34A), // ✨ M3 elevation tint
+  surfaceTint: Color(0xFF16A34A),
 );
 
 class MyApp extends StatelessWidget {
@@ -79,11 +73,14 @@ class MyApp extends StatelessWidget {
             debugShowCheckedModeBanner: false,
             themeMode: dark ? ThemeMode.dark : ThemeMode.light,
 
-            // ☀️ LIGHT THEME — uses emerald seed so primary = green
+            // ⛔️ Full-screen offline blocker wraps the whole app
+            builder: (context, child) => OfflineGate(child: child ?? const SizedBox()),
+
+            // ☀️ LIGHT THEME
             theme: ThemeData(
               useMaterial3: true,
               colorScheme: ColorScheme.fromSeed(
-                seedColor: const Color(0xFF16A34A), // 🌿 Emerald seed
+                seedColor: const Color(0xFF16A34A),
               ),
               appBarTheme: const AppBarTheme(
                 elevation: 0,
@@ -108,7 +105,7 @@ class MyApp extends StatelessWidget {
               ),
             ),
 
-            // 🌙 DARK THEME — custom green scheme from above
+            // 🌙 DARK THEME
             darkTheme: ThemeData(
               useMaterial3: true,
               colorScheme: darkScheme,
@@ -128,8 +125,8 @@ class MyApp extends StatelessWidget {
                 style: ElevatedButton.styleFrom(
                   shape: baseBtnShape,
                   minimumSize: const Size(56, 44),
-                  backgroundColor: darkScheme.primary, // ✅ green buttons
-                  foregroundColor: darkScheme.onPrimary, // ✅ readable text/icons
+                  backgroundColor: darkScheme.primary,
+                  foregroundColor: darkScheme.onPrimary,
                 ),
               ),
               cardTheme: CardThemeData(

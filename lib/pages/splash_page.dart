@@ -16,12 +16,12 @@ class _SplashPageState extends State<SplashPage> with SingleTickerProviderStateM
   void initState() {
     super.initState();
     _c = AnimationController(vsync: this, duration: const Duration(milliseconds: 2400));
-    _bg        = CurvedAnimation(parent: _c, curve: const Interval(0.00, 1.00, curve: Curves.easeInOut));
+    _bg = CurvedAnimation(parent: _c, curve: const Interval(0.00, 1.00, curve: Curves.easeInOut));
     _logoScale = CurvedAnimation(parent: _c, curve: const Interval(0.05, 0.45, curve: Curves.easeOutBack));
-    _logoFade  = CurvedAnimation(parent: _c, curve: const Interval(0.05, 0.45, curve: Curves.easeOut));
-    _titleSlide= CurvedAnimation(parent: _c, curve: const Interval(0.35, 0.80, curve: Curves.easeOut));
+    _logoFade = CurvedAnimation(parent: _c, curve: const Interval(0.05, 0.45, curve: Curves.easeOut));
+    _titleSlide = CurvedAnimation(parent: _c, curve: const Interval(0.35, 0.80, curve: Curves.easeOut));
     _titleFade = CurvedAnimation(parent: _c, curve: const Interval(0.35, 0.80, curve: Curves.easeOut));
-    _bar       = CurvedAnimation(parent: _c, curve: const Interval(0.55, 0.95, curve: Curves.easeInOut));
+    _bar = CurvedAnimation(parent: _c, curve: const Interval(0.55, 0.95, curve: Curves.easeInOut));
     _c.forward();
     _c.addStatusListener((s) async {
       if (s == AnimationStatus.completed && mounted) {
@@ -35,13 +35,16 @@ class _SplashPageState extends State<SplashPage> with SingleTickerProviderStateM
   }
 
   @override
-  void dispose() { _c.dispose(); super.dispose(); }
+  void dispose() {
+    _c.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
     return Scaffold(
-      backgroundColor: cs.background,
+      backgroundColor: cs.surface,
       body: AnimatedBuilder(
         animation: _c,
         builder: (_, __) {
@@ -55,11 +58,17 @@ class _SplashPageState extends State<SplashPage> with SingleTickerProviderStateM
                     child: Opacity(
                       opacity: _logoFade.value,
                       child: Container(
-                        width: 108, height: 108,
+                        width: 108,
+                        height: 108,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          gradient: LinearGradient(colors: [cs.primary, cs.tertiary, cs.secondary], begin: Alignment.topLeft, end: Alignment.bottomRight),
-                          boxShadow: [BoxShadow(color: cs.primary.withOpacity(0.35), blurRadius: 28, offset: Offset(0,10))],
+                          gradient: LinearGradient(
+                              colors: [cs.primary, cs.tertiary, cs.secondary],
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight),
+                          boxShadow: [
+                            BoxShadow(color: cs.primary.withOpacity(0.35), blurRadius: 28, offset: Offset(0, 10))
+                          ],
                         ),
                         alignment: Alignment.center,
                         child: _LogoOrIcon(color: Colors.white),
@@ -75,28 +84,36 @@ class _SplashPageState extends State<SplashPage> with SingleTickerProviderStateM
                         shaderCallback: (r) {
                           final dx = r.width * (_bg.value * 0.8);
                           return LinearGradient(
-                            colors: [cs.onBackground, cs.primary, cs.onBackground],
+                            colors: [cs.onSurface, cs.primary, cs.onSurface],
                             stops: const [0.1, 0.5, 0.9],
-                            begin: Alignment(-1 + dx, 0), end: Alignment(1 + dx, 0),
+                            begin: Alignment(-1 + dx, 0),
+                            end: Alignment(1 + dx, 0),
                           ).createShader(r);
                         },
                         blendMode: BlendMode.srcIn,
-                        child: Text('English Quiz',
-                          style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, letterSpacing: 0.5, color: cs.onBackground),
+                        child: Text(
+                          'Math Quiz',
+                          style: TextStyle(
+                              fontSize: 28, fontWeight: FontWeight.bold, letterSpacing: 0.5, color: cs.onSurface),
                         ),
                       ),
                     ),
                   ),
                   const SizedBox(height: 24),
                   Container(
-                    width: 220, height: 8,
-                    decoration: BoxDecoration(color: cs.surfaceVariant.withOpacity(0.5), borderRadius: BorderRadius.circular(999)),
+                    width: 220,
+                    height: 8,
+                    decoration: BoxDecoration(
+                        color: cs.surfaceContainerHighest.withOpacity(0.5), borderRadius: BorderRadius.circular(999)),
                     alignment: Alignment.centerLeft,
                     child: FractionallySizedBox(
                       widthFactor: (_bar.value).clamp(0.0, 1.0),
                       child: Container(
                         decoration: BoxDecoration(
-                          gradient: LinearGradient(colors: [cs.primary, cs.secondary], begin: Alignment.centerLeft, end: Alignment.centerRight),
+                          gradient: LinearGradient(
+                              colors: [cs.primary, cs.secondary],
+                              begin: Alignment.centerLeft,
+                              end: Alignment.centerRight),
                           borderRadius: BorderRadius.circular(999),
                         ),
                       ),
@@ -120,15 +137,18 @@ class _LogoOrIcon extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Image.asset(
-      'assets/logo.png',
-      width: 56, height: 56, fit: BoxFit.contain,
+      'assets/math_quiz_icon.png',
+      width: 56,
+      height: 56,
+      fit: BoxFit.contain,
       errorBuilder: (_, __, ___) => Icon(Icons.menu_book_rounded, size: 48, color: color),
     );
   }
 }
 
 class _BubblesPainter extends CustomPainter {
-  final double t; final ColorScheme cs;
+  final double t;
+  final ColorScheme cs;
   _BubblesPainter(this.t, this.cs);
   @override
   void paint(Canvas canvas, Size size) {
@@ -144,11 +164,18 @@ class _BubblesPainter extends CustomPainter {
       final center = Offset((b.dx + dx) * size.width, (b.dy + dy) * size.height);
       final paint = Paint()
         ..shader = RadialGradient(colors: [b.color, b.color.withOpacity(0.0)], stops: const [0.0, 1.0])
-              .createShader(Rect.fromCircle(center: center, radius: b.r));
+            .createShader(Rect.fromCircle(center: center, radius: b.r));
       canvas.drawCircle(center, b.r, paint);
     }
   }
+
   @override
   bool shouldRepaint(covariant _BubblesPainter old) => old.t != t || old.cs != cs;
 }
-class _Bubble { final double dx, dy; final double r; final Color color; _Bubble(this.dx, this.dy, this.r, this.color); }
+
+class _Bubble {
+  final double dx, dy;
+  final double r;
+  final Color color;
+  _Bubble(this.dx, this.dy, this.r, this.color);
+}
