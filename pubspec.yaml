@@ -1,0 +1,37 @@
+name: english_quiz
+description: "A new Flutter project."
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.6.2
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.8
+  flutter_bloc: ^9.0.0
+  equatable: ^2.0.5
+  shared_preferences: ^2.2.3
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+  flutter_launcher_icons: ^0.14.3
+
+# 🔻 THIS BLOCK MUST BE TOP-LEVEL, NOT UNDER dev_dependencies
+flutter_launcher_icons:
+  android: true               # or "launcher_icon"
+  ios: true
+  image_path: assets/eqlogo.png
+  # Optional (Android 8+ adaptive icons)
+  # adaptive_icon_background: "#121022"   # or an image path
+  # adaptive_icon_foreground: assets/eqlogo.png
+  min_sdk_android: 21
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/
