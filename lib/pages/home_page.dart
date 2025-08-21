@@ -950,11 +950,72 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> _openRound(int r) async {
-    await Prefs.setCurrentRound(r);
-    context.read<QuizBloc>().add(LoadRound(r));
+    if (_completed.contains(r)) {
+      await _showStoredResult(r);
+      return;
+    }
+    // await Prefs.setCurrentRound(r);
+    // context.read<QuizBloc>().add(LoadRound(r));
+    // if (!mounted) return;
+    // await Navigator.of(context).push(MaterialPageRoute(builder: (_) => const RoundPage()));
+    // _load(); // refresh after returning
+  }
+
+  Future<void> _showStoredResult(int round) async {
+    final res = await Prefs.getRoundResult(round);
     if (!mounted) return;
-    await Navigator.of(context).push(MaterialPageRoute(builder: (_) => const RoundPage()));
-    _load(); // refresh after returning
+
+    if (res == null) {
+      // fallback if result wasn’t saved for some reason
+      await showModalBottomSheet(
+        context: context,
+        builder: (_) => Padding(
+          padding: const EdgeInsets.all(20),
+          child: Column(mainAxisSize: MainAxisSize.min, children: [
+            Text('Round $round Result', style: Theme.of(context).textTheme.headlineSmall),
+            const SizedBox(height: 12),
+            const Text('Result not available for this round.'),
+            const SizedBox(height: 12),
+            FilledButton(onPressed: () => Navigator.pop(context), child: const Text('Close')),
+          ]),
+        ),
+      );
+      return;
+    }
+
+    final correct = res['correct']!;
+    final total = res['total']!;
+    final wrong = total - correct;
+
+    await showModalBottomSheet(
+      context: context,
+      isDismissible: true,
+      builder: (_) => Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(mainAxisSize: MainAxisSize.min, children: [
+          Text('Round $round • Result', style: Theme.of(context).textTheme.headlineSmall),
+          const SizedBox(height: 12),
+          Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+            _resultBadge('✅ Correct', correct, Colors.green),
+            _resultBadge('❌ Wrong', wrong, Colors.red),
+          ]),
+          const SizedBox(height: 16),
+          FilledButton(onPressed: () => Navigator.pop(context), child: const Text('Close')),
+        ]),
+      ),
+    );
+  }
+
+  Widget _resultBadge(String label, int val, Color color) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+      decoration: BoxDecoration(color: color.withOpacity(0.15), borderRadius: BorderRadius.circular(12)),
+      child: Column(children: [
+        Text(label),
+        const SizedBox(height: 6),
+        Text('$val', style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+      ]),
+    );
   }
 
   @override

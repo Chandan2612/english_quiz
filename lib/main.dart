@@ -1,7 +1,9 @@
+import 'package:english_quiz/ads/interstitial_manager.dart';
 import 'package:english_quiz/widgets/offline_gate.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'core/prefs.dart';
 import 'quiz/quiz_bloc.dart';
 import 'quiz/quiz_repository.dart';
@@ -15,6 +17,8 @@ void main() async {
     // DeviceOrientation.portraitDown,
   ]);
   final isDark = await Prefs.getIsDark();
+  await MobileAds.instance.initialize();
+  InterstitialManager.preload();
   runApp(MyApp(isDark: isDark));
 }
 

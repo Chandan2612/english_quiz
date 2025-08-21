@@ -137,8 +137,6 @@
 //   }
 // }
 
-
-
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../core/prefs.dart';
 import 'models.dart';
@@ -146,12 +144,28 @@ import 'quiz_repository.dart'; // <-- brings in kQuestionsPerRound
 
 // EVENTS
 abstract class QuizEvent {}
-class LoadRound extends QuizEvent { final int round; LoadRound(this.round); }
-class SelectOption extends QuizEvent { final int questionIndex; final int optionIndex; SelectOption(this.questionIndex, this.optionIndex); }
+
+class LoadRound extends QuizEvent {
+  final int round;
+  LoadRound(this.round);
+}
+
+class SelectOption extends QuizEvent {
+  final int questionIndex;
+  final int optionIndex;
+  SelectOption(this.questionIndex, this.optionIndex);
+}
+
 class SubmitRound extends QuizEvent {}
+
 class NextQuestion extends QuizEvent {}
+
 class PrevQuestion extends QuizEvent {}
-class ResetForNextRound extends QuizEvent { final int nextRound; ResetForNextRound(this.nextRound); }
+
+class ResetForNextRound extends QuizEvent {
+  final int nextRound;
+  ResetForNextRound(this.nextRound);
+}
 
 // STATE
 class QuizState {
@@ -187,29 +201,30 @@ class QuizState {
     int? selectionTick,
     bool? loading,
     int? adsToShow,
-  }) => QuizState(
-    round: round ?? this.round,
-    questions: questions ?? this.questions,
-    selected: selected ?? this.selected,
-    currentIndex: currentIndex ?? this.currentIndex,
-    submitted: submitted ?? this.submitted,
-    correctCount: correctCount ?? this.correctCount,
-    selectionTick: selectionTick ?? this.selectionTick,
-    loading: loading ?? this.loading,
-    adsToShow: adsToShow ?? this.adsToShow,
-  );
+  }) =>
+      QuizState(
+        round: round ?? this.round,
+        questions: questions ?? this.questions,
+        selected: selected ?? this.selected,
+        currentIndex: currentIndex ?? this.currentIndex,
+        submitted: submitted ?? this.submitted,
+        correctCount: correctCount ?? this.correctCount,
+        selectionTick: selectionTick ?? this.selectionTick,
+        loading: loading ?? this.loading,
+        adsToShow: adsToShow ?? this.adsToShow,
+      );
 
   static QuizState initial() => const QuizState(
-    round: 1,
-    questions: [],
-    selected: {},
-    currentIndex: 0,
-    submitted: false,
-    correctCount: 0,
-    selectionTick: 0,
-    loading: true,
-    adsToShow: 0,
-  );
+        round: 1,
+        questions: [],
+        selected: {},
+        currentIndex: 0,
+        submitted: false,
+        correctCount: 0,
+        selectionTick: 0,
+        loading: true,
+        adsToShow: 0,
+      );
 }
 
 // BLOC
@@ -283,6 +298,7 @@ class QuizBloc extends Bloc<QuizEvent, QuizState> {
 
     // ✅ New rule: 7 questions → if correct >= 4 → 1 ad, else 2 ads
     final ads = (correct >= 4) ? 1 : 2;
+    await Prefs.setRoundResult(state.round, correct, state.questions.length);
 
     emit(state.copyWith(submitted: true, correctCount: correct, adsToShow: ads));
     await Prefs.addCompletedRound(state.round);
